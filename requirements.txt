@@ -5,7 +5,7 @@ matplotlib==3.8.4
 mmcv==2.0.0rc4
 mmdet==3.3.0
 mmsegmentation==1.2.2
-numpy==2.1.1
+numpy==2.1.2
 omegaconf==2.3.0
 opencv_python==4.9.0.80
 opencv_python_headless==4.10.0.84
@@ -16,7 +16,7 @@ scipy==1.14.1
 skimage==0.0
 submitit==1.5.2
 torch==2.2.2
-torchmetrics==1.4.2
+torchmetrics==1.4.3
 torchvision==0.17.2
 tqdm==4.65.2
 transformers==4.39.3
