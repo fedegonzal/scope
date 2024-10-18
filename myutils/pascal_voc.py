@@ -70,4 +70,7 @@ def get_images(dataset_path, n):
         for filename in [f for f in filenames if f.endswith(".jpg")]:
             images.append(filename.split('.')[0])
 
-    return random.sample(images, n)
+    if n < 0:
+        return images
+    else:
+        return random.sample(images, n)
