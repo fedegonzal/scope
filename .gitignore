@@ -2,3 +2,4 @@ datasets/*
 pretrained/*
 **/__pycache__
 **/.DS_Store
+results/*_images

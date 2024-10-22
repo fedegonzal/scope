@@ -37,14 +37,13 @@ from transformers import  DPTForDepthEstimation, DPTImageProcessor
 import base64
 import json
 import argparse
-from datetime import datetime
+
 
 # dino v1
 params = {
     'patch_size': 16,
     'ssl_checkpoint': 'pretrained/dino_deitsmall16_pretrain.pth',
-#    'depth_checkpoint': 'Intel/dpt-hybrid-midas',
-    'depth_checkpoint': 'Intel/dpt-beit-base-384',
+    'depth_checkpoint': 'Intel/dpt-hybrid-midas',
     'img_size': None
 }
 
@@ -63,23 +62,13 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # let's create or open a file to store the results, we want to read and write
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--timestamp', type=str, help='prefix results file to store the results')
+parser.add_argument('--filename', type=str, help='results file to store the results')
 args = parser.parse_args()
 
-# timestamp has the format: YYYYMMDD, else today
-timestamp = args.timestamp if args.timestamp else datetime.now().strftime("%Y%m%d")
+filename = args.filename if args.filename else "results.csv"
 
-results_filename = f"results/{timestamp}_results.csv"
+results_file = open(filename, "r+")
 
-# create a folder to store the images if it doesn't exist
-if not os.path.exists(f"results/{timestamp}_images"):
-    os.makedirs(f"results/{timestamp}_images")
-
-# the file where we store the results, create if it doesn't exist
-if not os.path.exists(results_filename):
-    results_file = open(results_filename, "w+")
-else:
-    results_file = open(results_filename, "r+")
 
 
 # Get N random images from dataset_path
@@ -180,8 +169,8 @@ for i, img_name in enumerate(progress_bar):
     # Sum the attention outputs (6 outputs used in DINO)
     sum_atts = atts.sum(0)
 
-    #noise = estimate_noise(sum_atts)
-    #entropy = calculate_entropy(sum_atts)
+    noise = estimate_noise(sum_atts)
+    entropy = calculate_entropy(sum_atts)
 
     # Resize the attentions to the original image size
     sum_atts_resized = cv2.resize(sum_atts, (pil_img.width, pil_img.height))
@@ -242,12 +231,10 @@ for i, img_name in enumerate(progress_bar):
     # Get the predicted boxes from the final image using contours
     predicted_boxes = get_boxes(final_att_thresholded)
 
-    final_boxes = predicted_boxes
-
     #plt.imshow(final_att_thresholded)
     #plt.show()
 
-    '''
+
     ###################
     # DEPTH SPLITTING #
     ###################
@@ -314,6 +301,7 @@ for i, img_name in enumerate(progress_bar):
         #plt.imshow(final_image)
         #plt.show()
 
+
     ###############
     # FINAL BOXES #
     ###############
@@ -336,15 +324,8 @@ for i, img_name in enumerate(progress_bar):
         except:
             pass
 
-    '''
-            
     # let´s draw the final image with the proposed_boxes matched with the predicted_boxes
     final_boxes_image = get_output_image(pil_img, final_boxes, ground_truth)
-
-    # save the final image, which is a numpy.ndarray
-    final_boxes_image = Image.fromarray(final_boxes_image)
-    final_boxes_image.save(f"results/{timestamp}_images/{img_name}.jpg")
-
 
     #plt.imshow(final_boxes_image)
     #plt.show()

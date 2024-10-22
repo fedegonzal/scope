@@ -43,8 +43,7 @@ from datetime import datetime
 params = {
     'patch_size': 16,
     'ssl_checkpoint': 'pretrained/dino_deitsmall16_pretrain.pth',
-#    'depth_checkpoint': 'Intel/dpt-hybrid-midas',
-    'depth_checkpoint': 'Intel/dpt-beit-base-384',
+    'depth_checkpoint': 'Intel/dpt-hybrid-midas',
     'img_size': None
 }
 

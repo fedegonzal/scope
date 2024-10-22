@@ -43,8 +43,7 @@ from datetime import datetime
 params = {
     'patch_size': 16,
     'ssl_checkpoint': 'pretrained/dino_deitsmall16_pretrain.pth',
-#    'depth_checkpoint': 'Intel/dpt-hybrid-midas',
-    'depth_checkpoint': 'Intel/dpt-beit-base-384',
+    'depth_checkpoint': 'Intel/dpt-hybrid-midas',
     'img_size': None
 }
 
@@ -196,33 +195,12 @@ for i, img_name in enumerate(progress_bar):
     #plt.imshow(sum_atts_resized_norm)
     #plt.show()
 
-
-    #################
-    # GETTING DEPTH #
-    #################
-
-    # Get the depth prediction
-    depth_feats, depth_image = get_depth_prediction(pil_img, params['depth_checkpoint'])
-
-    # Obtain the depth map
-
-    # Resize depth_image to the original image size
-    numpy_depth_image = depth_image.squeeze(0).cpu().numpy()
-    depth_image_resized = cv2.resize(numpy_depth_image, pil_img.size)
-
-    # plt.imshow(depth_image_resized)
-    # plt.show()
-
-    # Normalizing depth
-    depth_image_resized_norm = (depth_image_resized - np.min(depth_image_resized)) / (np.max(depth_image_resized) - np.min(depth_image_resized))
-
-
     ############################
     # FINAL ATT * GLOBAL DEPTH #
     ############################
 
     # final attention map (depth * att)
-    final_attention_map = depth_image_resized_norm * sum_atts_resized_norm
+    final_attention_map = sum_atts_resized_norm
 
     #plt.imshow(final_attention_map)
     #plt.show()

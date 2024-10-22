@@ -40,6 +40,19 @@ def draw_ground_truth_voc2007(pil_img, ground_truth):
     return img
 
 
+# Given a List of boxes, draw them over a imagen
+def draw_boxes(pil_img, boxes, color=(0, 255, 0)):
+
+    img = np.array(pil_img)
+
+    # Draw the contours of the objects
+    for box in boxes:
+        xmin, ymin, xmax, ymax = box
+
+        cv2.rectangle(img, (xmin, ymin), (xmax, ymax), color, 2)
+
+    return img
+
 
 # Convert a Pascal VOC 2007 ground truth, to list format
 # [ [xmin, ymin, xmax, ymax] , ... ]
